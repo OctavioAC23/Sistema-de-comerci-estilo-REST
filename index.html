@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+    crossorigin="anonymous"></script>
+  <script src='/WSClient.js'></script>
+  <script>
+    function get(id) {
+      return document.getElementById(id);
+    }
+    function muestra(id) {
+      get(id).style.display = "block";
+    }
+
+    function oculta(id) {
+      get(id).style.display = "none";
+    }
+    function muestra_pantalla(id) {
+      oculta("menu");
+      muestra(id);
+    }
+    function oculta_pantalla(id) {
+      oculta(id);
+      muestra("menu");
+    }
+    function readSingleFile(files,imagen)
+			{
+				var file = files[0];
+				if (!file) return;
+				var reader = new FileReader();
+				reader.onload = function(e)
+				{
+					imagen.src = reader.result;
+					// reader.result incluye al principio: "data:image/jpeg;base64,"
+					foto = reader.result.split(',')[1];
+				};
+				reader.readAsDataURL(file);
+			}
+
+    function alta() {
+      var cliente = new WSClient(URL);
+      var usuario =
+      {
+        //email: get("alta_email").value,
+        nombre: get("alta_nombre").value,
+        descripcion: get("alta_apellido_paterno").value,
+        precio: get("alta_precio").value,
+        cantidad: get("alta_cantidad").value,
+        foto: foto
+      };
+      cliente.postJson("agrega_articulo",
+        {
+          usuario: usuario
+        },
+        function (code, result) {
+          if (code == 200)
+            alert("OK");
+          else
+            alert(JSON.stringify(result));
+        });
+    }
+
+    const searchButton = document.getElementById('search-button');
+    const searchInput = document.getElementById('search-input');
+    searchButton.addEventListener('click', () => {
+      const inputValue = searchInput.value;
+      alert(inputValue);
+    });
+
+  </script>
+  <title>Tarea 7</title>
+</head>
+
+<body>
+
+  <div id="menu">
+    <div class="px-4 py-5 my-5 text-center">
+      <h1 class="display-5 fw-bold">Tarea 7</h1>
+      <div class="col-lg-6 mx-auto">
+        <p class="lead mb-4">Desarrollo de un prototipo de sistema de comercio electrónico utilizando un servicio web
+          estilo REST</p>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+          <button type="button" onclick="muestra_pantalla('agrega_articulo')"
+            class="btn btn-primary btn-lg px-4 gap-3">Captura de Artículo</button>
+          <button type="button" onclick="muestra_pantalla('compra_articulo')"
+            class="btn btn-outline-secondary btn-lg px-4">Compra de Artículos</button>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <footer class="py-3 my-4">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+        </ul>
+        <p class="text-center text-muted">© 2023 Jesus Octavio Alvarez Carmona </p>
+      </footer>
+    </div>
+  </div>
+
+
+  <div id="agrega_articulo" style="display:none">
+    <form>
+      <h2>Captura de Artículo</h2>
+      <div class="form-group">
+        <label for="formGroupExampleInput">Nombre</label>
+        <input type="text" class="form-control" id="alta_nombre" placeholder="Nombre">
+      </div>
+      <div class="mb-3">
+        <label for="exampleFormControlTextarea1" class="form-label">Descripcion</label>
+        <textarea class="form-control" id="alta_descripcion" rows="3" placeholder="Descripcion"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="formGroupExampleInput2">Precio</label>
+        <input type="text" class="form-control" id="alta_precio" placeholder="Precio">
+      </div>
+      <div class="form-group">
+        <label for="formGroupExampleInput2">Cantidad</label>
+        <input type="text" class="form-control" id="alta_cantidad" placeholder="Cantidad">
+      </div>
+      <div class="mb-3">
+        <label for="formFile" class="form-label">Imagen</label>
+        <input class="form-control" type="file" id="alta_imagen">
+      </div>
+      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+        <button type="button"  onclick="alta()" class="btn btn-primary btn-lg px-4 gap-3">Agregar Articulo</button>
+        <button type="button" onclick="oculta_pantalla('agrega_articulo')"
+          class="btn btn-outline-secondary btn-lg px-4">Atras</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="compra_articulo" style="display:none">
+    <h2>Compra Articulo</h2>
+    <form class="d-flex gap-3 flex-wrap mt-4">
+      <div>
+        <input class="form-control" type="text" name="searchProductInput" id="searchProductInput">
+      </div>
+      <div>
+        <button type="button" class="btn btn-primary btn-lg px-4 gap-3">Buscar Articulo</button>
+        <button type="button" onclick="oculta_pantalla('compra_articulo')"
+          class="btn btn-outline-secondary btn-lg px-4">Atras</button>
+      </div>
+    </form>
+  </div>
+</body>
+
+</html>
